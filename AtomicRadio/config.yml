@@ -3,11 +3,10 @@
 # as well as a prefix to precede any messages from AtomicRadio and a prefix for whichever
 # player that is the current DJ.
 
-statusURL: "http://127.0.0.1:8000/stats?sid=1"
-listenURL: "http://127.0.0.1:8000/listen?sid=1"
-messagePrefix: "AtomicRadio"
-djPrefix: "DJ"
+statusURL: http://127.0.0.1:8000/stats?sid=1
+listenURL: http://127.0.0.1:8000/listen?sid=1
+messagePrefix: AtomicRadio
+djPrefix: DJ
 
 # Don't touch these, they will be populated by the plugin
-djName: ""
-# preDJPrefix: "" (unused)
+djName: none

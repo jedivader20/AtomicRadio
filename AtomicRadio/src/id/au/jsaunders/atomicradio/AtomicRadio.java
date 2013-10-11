@@ -43,7 +43,7 @@ public final class AtomicRadio extends JavaPlugin {
 		statusURL = config.getString("statusURL");
 		messagePrefix = config.getString("messagePrefix");
 		djPrefix = config.getString("djPrefix");
-		djName = config.getString("djName");
+		djName = null;
 
 		// Vault Hooking
 		//		if (!setupChat() ) {
@@ -144,7 +144,7 @@ public final class AtomicRadio extends JavaPlugin {
 					// Check to see if player has atomicradio.status
 					if (player.hasPermission("atomicradio.status")) {
 						// Is there a DJ online?
-						if(djName != "none") {
+						if(djName != null) {
 							// Get and parse the XML for the radio (returns an array)
 							String[] result = getStatusXML(statusURL);
 							int radioStatus = Integer.parseInt(result[0]);
@@ -170,7 +170,7 @@ public final class AtomicRadio extends JavaPlugin {
 				} else if((args[0].equalsIgnoreCase("bc")) || (args[0].equalsIgnoreCase("broadcast"))) { // /radio bc or /radio broadcast
 					if(player.hasPermission("atomicradio.admin")) { // Check to see if player has atomicradio.admin
 						// Is there a current DJ?
-						if(djName != "none") {
+						if(djName != null) {
 							// Get and parse the XML for the radio (returns an array)
 							String[] result = getStatusXML(statusURL);
 							int radioStatus = Integer.parseInt(result[0]);
@@ -221,7 +221,7 @@ public final class AtomicRadio extends JavaPlugin {
 						if(args.length == 1) { // if no arguments entered
 							// Player seeking current DJ
 							// Check to see if there is a current DJ
-							if(djName == "none") {
+							if(djName == null) {
 								// If no current DJ
 								sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "There is no DJ online, please try again later!");
 								return true;	
@@ -233,7 +233,7 @@ public final class AtomicRadio extends JavaPlugin {
 						} else if(args[1].equalsIgnoreCase("on")){ // Player typed /radio dj on
 							// Check to see if player has atomicradio.use permission
 							if(player.hasPermission("atomicradio.use")) {
-								if(djName == "none") {
+								if(djName == null) {
 									// If there is no current DJ
 									String p = player.getName();
 									djName = p;
@@ -243,8 +243,8 @@ public final class AtomicRadio extends JavaPlugin {
 									//chat.setPlayerPrefix(player, djPrefix);
 									// Broadcast that DJ is going online
 									Bukkit.broadcastMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + " is going online! Listen in at: " + listenURL);
-									this.getConfig().set("djName", djName);
-									this.saveConfig();
+									//this.getConfig().set("djName", djName);
+									//this.saveConfig();
 									return true;
 								} else {
 									// If there is a current DJ
@@ -260,7 +260,7 @@ public final class AtomicRadio extends JavaPlugin {
 							// Check to see if player is an admin
 							if(player.hasPermission("atomicradio.admin")) {
 								//Check to see if there is a current DJ
-								if(djName != "none") {
+								if(djName != null) {
 									// Broadcast that DJ is going offline
 									Bukkit.broadcastMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + " has stopped broadcasting! Thanks for listening!");
 									// Get custom prefix from before (if any) and set it back via Vault
@@ -272,9 +272,9 @@ public final class AtomicRadio extends JavaPlugin {
 										//preDJPrefix = "none";
 									//}
 									//Reset DJ status variable
-									djName = "none";
-									this.getConfig().set("djName", djName);
-									this.saveConfig();
+									djName = null;
+									//this.getConfig().set("djName", djName);
+									//this.saveConfig();
 									return true;
 								} else {
 									sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "There is no current DJ to take offline!");
@@ -282,7 +282,7 @@ public final class AtomicRadio extends JavaPlugin {
 								}
 							} else if(player.hasPermission("atomicradio.use")) {
 								//Check to see if there is a current DJ
-								if(djName != "none") {
+								if(djName != null) {
 									if(p == djName) { // Check to see if player is the current DJ
 										// Broadcast that DJ is going offline
 										Bukkit.broadcastMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + " has stopped broadcasting! Thanks for listening!");
@@ -294,7 +294,7 @@ public final class AtomicRadio extends JavaPlugin {
 											//preDJPrefix = "none";
 										//}
 										// Reset DJ status variable
-										djName = "none";
+										djName = null;
 										this.getConfig().set("djName", djName);
 										this.saveConfig();
 										return true;
