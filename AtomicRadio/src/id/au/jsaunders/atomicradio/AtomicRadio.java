@@ -315,6 +315,26 @@ public final class AtomicRadio extends JavaPlugin {
 						sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command. (/radio)");
 						return true;
 					}
+				} else if(args[0].equalsIgnoreCase("reload")) {
+					// Reload command issued, are they an admin?
+					if (player.hasPermission("atomicradio.admin")) {
+						// refresh variables from config
+						listenURL = null;
+						statusURL = null;
+						messagePrefix = null;
+						djPrefix = null;
+						reloadConfig();
+						listenURL = config.getString("listenURL");
+						statusURL = config.getString("statusURL");
+						messagePrefix = config.getString("messagePrefix");
+						djPrefix = config.getString("djPrefix");
+						log.info(djPrefix);
+						sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "Configuration reloaded!");
+						return true;
+					} else {
+						sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command. (/radio reload)");
+						return true;
+					}
 				}
 			} else {
 				log.warning(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "This command may only be issued by a player!");
