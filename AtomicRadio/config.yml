@@ -1,0 +1,14 @@
+# Config for AtomicRadio
+# Edit the following to define the Status URL and Listen URL of your ShoutCast server,
+# as well as a prefix to precede any messages from AtomicRadio and a prefix for whichever
+# player that is the current DJ. For any colour in the prefixes, use § and then the colour
+# code, of which a list can be found at http://ess.khhq.net/mc/
+
+statusURL: "http://127.0.0.1:8000/stats?sid=1"
+listenURL: "http://127.0.0.1:8000/listen?sid=1"
+messagePrefix: "AtomicRadio"
+djPrefix: "DJ"
+
+# Don't touch these, they will be populated by the plugin
+djName: ""
+# preDJPrefix: "" (unused)
