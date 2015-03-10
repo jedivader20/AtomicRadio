@@ -5,7 +5,7 @@
 
 statusURL: http://127.0.0.1:8000/stats?sid=1
 listenURL: http://127.0.0.1:8000/listen?sid=1
-messagePrefix: AtomicRadio
+messagePrefix: &7[&6AtomicRadio&7]
 djPrefix: DJ
 
 # Don't touch these, they will be populated by the plugin

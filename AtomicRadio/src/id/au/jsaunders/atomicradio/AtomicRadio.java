@@ -41,7 +41,7 @@ public final class AtomicRadio extends JavaPlugin {
 		
 		listenURL = config.getString("listenURL");
 		statusURL = config.getString("statusURL");
-		messagePrefix = config.getString("messagePrefix");
+		messagePrefix = ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix"));
 		djPrefix = config.getString("djPrefix");
 		djName = null;
 
@@ -62,6 +62,10 @@ public final class AtomicRadio extends JavaPlugin {
 		PluginDescriptionFile pdfFile = this.getDescription();
 		// "AtomicRadio version blah has been disabled!"
 		log.info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is disabled!" );
+	}
+	
+	public void radioConfigReload() {
+		
 	}
 
 	// XML Parsing
@@ -153,18 +157,18 @@ public final class AtomicRadio extends JavaPlugin {
 							// Check the status of the stream
 							if (radioStatus == 1) {
 								// Broadcast the details of the current stream
-								sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + ChatColor.DARK_RED + "LIVE" + ChatColor.GRAY + " with " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + ChatColor.GOLD + " | " + ChatColor.GRAY + radioListeners + " listeners " + ChatColor.GOLD + "|" + ChatColor.DARK_RED + " NP" + ChatColor.GRAY + ": " + radioSong + " " + ChatColor.GOLD + "|" + ChatColor.GRAY + " Listen at: " + ChatColor.GOLD + listenURL);
+								sender.sendMessage(messagePrefix + ChatColor.RESET + " " + ChatColor.DARK_RED + "LIVE" + ChatColor.GRAY + " with " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + ChatColor.GOLD + " | " + ChatColor.GRAY + radioListeners + " listeners " + ChatColor.GOLD + "|" + ChatColor.DARK_RED + " NP" + ChatColor.GRAY + ": " + radioSong + " " + ChatColor.GOLD + "|" + ChatColor.GRAY + " Listen at: " + ChatColor.GOLD + listenURL);
 								return true;
 							} else {
-								sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "Stream is currently offline! Please try again later.");
+								sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Stream is currently offline! Please try again later.");
 								return true;
 							}
 						} else {
-							sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "There is no DJ online, please try again later.");
+							sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "There is no DJ online, please try again later.");
 							return true;
 						}
 					} else {
-						sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command.");
+						sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command.");
 						return true;
 					}
 				} else if((args[0].equalsIgnoreCase("bc")) || (args[0].equalsIgnoreCase("broadcast"))) { // /radio bc or /radio broadcast
@@ -179,14 +183,14 @@ public final class AtomicRadio extends JavaPlugin {
 							// Check the status of the stream
 							if (radioStatus == 1) {
 								// Broadcast the details of the current stream
-								Bukkit.broadcastMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + ChatColor.DARK_RED + "LIVE" + ChatColor.GRAY + " with " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + ChatColor.GOLD + " | " + ChatColor.GRAY + radioListeners + " listeners " + ChatColor.GOLD + "|" + ChatColor.DARK_RED + " NP" + ChatColor.GRAY + ": " + radioSong + " " + ChatColor.GOLD + "|" + ChatColor.GRAY + " Listen at: " + ChatColor.GOLD + listenURL);
+								Bukkit.broadcastMessage(messagePrefix + ChatColor.RESET + " " + ChatColor.DARK_RED + "LIVE" + ChatColor.GRAY + " with " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + ChatColor.GOLD + " | " + ChatColor.GRAY + radioListeners + " listeners " + ChatColor.GOLD + "|" + ChatColor.DARK_RED + " NP" + ChatColor.GRAY + ": " + radioSong + " " + ChatColor.GOLD + "|" + ChatColor.GRAY + " Listen at: " + ChatColor.GOLD + listenURL);
 								return true;
 							} else {
-								sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "Stream is currently offline! Please try again later.");
+								sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Stream is currently offline! Please try again later.");
 								return true;
 							}
 						} else {
-							sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "There is no DJ online, please try again later.");
+							sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "There is no DJ online, please try again later.");
 							return true;
 						}
 					} else {
@@ -203,15 +207,15 @@ public final class AtomicRadio extends JavaPlugin {
 								// Check the status of the stream
 								if (radioStatus == 1) {
 									// Broadcast the details of the current stream
-									Bukkit.broadcastMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + ChatColor.DARK_RED + "LIVE" + ChatColor.GRAY + " with " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + ChatColor.GOLD + " | " + ChatColor.GRAY + radioListeners + " listeners " + ChatColor.GOLD + "|" + ChatColor.DARK_RED + " NP" + ChatColor.GRAY + ": " + radioSong + " " + ChatColor.GOLD + "|" + ChatColor.GRAY + " Listen at: " + ChatColor.GOLD + listenURL);
+									Bukkit.broadcastMessage(messagePrefix + ChatColor.RESET + " " + ChatColor.DARK_RED + "LIVE" + ChatColor.GRAY + " with " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + ChatColor.GOLD + " | " + ChatColor.GRAY + radioListeners + " listeners " + ChatColor.GOLD + "|" + ChatColor.DARK_RED + " NP" + ChatColor.GRAY + ": " + radioSong + " " + ChatColor.GOLD + "|" + ChatColor.GRAY + " Listen at: " + ChatColor.GOLD + listenURL);
 									return true;
 								} else {
-									sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "Stream is currently offline! Please try again later.");
+									sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Stream is currently offline! Please try again later.");
 									return true;
 								}
 							}
 						} else {
-							sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command.");
+							sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command.");
 							return true;
 						}
 					}
@@ -223,11 +227,11 @@ public final class AtomicRadio extends JavaPlugin {
 							// Check to see if there is a current DJ
 							if(djName == null) {
 								// If no current DJ
-								sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "There is no DJ online, please try again later!");
+								sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "There is no DJ online, please try again later!");
 								return true;	
 							} else {
 								// If there is a DJ
-								sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + " is the current DJ!");
+								sender.sendMessage(messagePrefix + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + " is the current DJ!");
 								return true;
 							}
 						} else if(args[1].equalsIgnoreCase("on")){ // Player typed /radio dj on
@@ -242,17 +246,17 @@ public final class AtomicRadio extends JavaPlugin {
 									// Set Vault prefix to defined DJ prefix (djPrefix)
 									//chat.setPlayerPrefix(player, djPrefix);
 									// Broadcast that DJ is going online
-									Bukkit.broadcastMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + " is going online! Listen in at: " + listenURL);
+									Bukkit.broadcastMessage(messagePrefix + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + " is going online! Listen in at: " + listenURL);
 									//this.getConfig().set("djName", djName);
 									//this.saveConfig();
 									return true;
 								} else {
 									// If there is a current DJ
-									sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "There is already a DJ online! Please try again later.");
+									sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "There is already a DJ online! Please try again later.");
 									return true;
 								}
 							} else {
-								sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command. (/radio dj on)");
+								sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command. (/radio dj on)");
 								return true;
 							}
 						} else if(args[1].equalsIgnoreCase("off")) { // Player typed /radio dj off
@@ -262,7 +266,7 @@ public final class AtomicRadio extends JavaPlugin {
 								//Check to see if there is a current DJ
 								if(djName != null) {
 									// Broadcast that DJ is going offline
-									Bukkit.broadcastMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + " has stopped broadcasting! Thanks for listening!");
+									Bukkit.broadcastMessage(messagePrefix + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + " has stopped broadcasting! Thanks for listening!");
 									// Get custom prefix from before (if any) and set it back via Vault
 									//if(preDJPrefix != "none") {
 										// Set Vault prefix to what pre-DJ prefix was
@@ -277,7 +281,7 @@ public final class AtomicRadio extends JavaPlugin {
 									//this.saveConfig();
 									return true;
 								} else {
-									sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "There is no current DJ to take offline!");
+									sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "There is no current DJ to take offline!");
 									return true;
 								}
 							} else if(player.hasPermission("atomicradio.use")) {
@@ -285,7 +289,7 @@ public final class AtomicRadio extends JavaPlugin {
 								if(djName != null) {
 									if(p == djName) { // Check to see if player is the current DJ
 										// Broadcast that DJ is going offline
-										Bukkit.broadcastMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + " has stopped broadcasting! Thanks for listening!");
+										Bukkit.broadcastMessage(messagePrefix + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + " has stopped broadcasting! Thanks for listening!");
 										// Get custom prefix from before (if any) and set it back via Vault
 										//if(preDJPrefix != "none") {
 											// Set Vault prefix to what pre-DJ prefix was
@@ -299,45 +303,49 @@ public final class AtomicRadio extends JavaPlugin {
 										this.saveConfig();
 										return true;
 									} else {
-										sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "You are not the current DJ! Only they can issue this command.");
+										sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "You are not the current DJ! Only they can issue this command.");
 										return true;
 									}
 								} else {
-									sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "There is no current DJ to take offline!");
+									sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "There is no current DJ to take offline!");
 									return true;
 								}
 							} else {
-								sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command. (/radio dj off)");
+								sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command. (/radio dj off)");
 								return true;
 							}
 						}
 					} else {
-						sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command. (/radio)");
+						sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command. (/radio)");
 						return true;
 					}
 				} else if(args[0].equalsIgnoreCase("reload")) {
 					// Reload command issued, are they an admin?
 					if (player.hasPermission("atomicradio.admin")) {
-						// refresh variables from config
+						// set config variables to null
 						listenURL = null;
 						statusURL = null;
 						messagePrefix = null;
 						djPrefix = null;
+						config = null;
+						// read the config values fresh from config.yml
 						reloadConfig();
+						// repopulate config variables
+						config = getConfig();
 						listenURL = config.getString("listenURL");
 						statusURL = config.getString("statusURL");
 						messagePrefix = config.getString("messagePrefix");
 						djPrefix = config.getString("djPrefix");
 						log.info(djPrefix);
-						sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "Configuration reloaded!");
+						sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Configuration reloaded!");
 						return true;
 					} else {
-						sender.sendMessage(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command. (/radio reload)");
+						sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "NOPE. You do not have permission to use this command. (/radio reload)");
 						return true;
 					}
 				}
 			} else {
-				log.warning(ChatColor.GOLD + "[" + ChatColor.GRAY + messagePrefix + ChatColor.GOLD + "]" + ChatColor.RESET + " " + "This command may only be issued by a player!");
+				log.warning(messagePrefix + ChatColor.RESET + " " + "This command may only be issued by a player!");
 				return true;
 			}
 		}
