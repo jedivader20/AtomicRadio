@@ -16,7 +16,7 @@ import org.w3c.dom.*;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public final class AtomicRadio extends JavaPlugin {
-	FileConfiguration config;
+	private FileConfiguration config;
 
 	// Vault hooking
 	//public static Chat chat = null;
@@ -64,12 +64,26 @@ public final class AtomicRadio extends JavaPlugin {
 		log.info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is disabled!" );
 	}
 	
-	public void radioConfigReload() {
-		
+	private void radioConfigReload() {
+		// set config variables to null
+		listenURL = null;
+		statusURL = null;
+		messagePrefix = null;
+		djPrefix = null;
+		config = null;
+		// read the config values fresh from config.yml
+		reloadConfig();
+		// repopulate config variables
+		config = getConfig();
+		listenURL = config.getString("listenURL");
+		statusURL = config.getString("statusURL");
+		messagePrefix = config.getString("messagePrefix");
+		djPrefix = config.getString("djPrefix");
+		log.info(djPrefix);
 	}
 
 	// XML Parsing
-	public String[] getStatusXML(String statusURL) {
+	private String[] getStatusXML(String statusURL) {
 		String[] result;
 		result = new String[3]; 
 		try {
@@ -196,7 +210,7 @@ public final class AtomicRadio extends JavaPlugin {
 					} else {
 						// Is the person issuing this command the online DJ?
 						String p = player.getName();
-						if(p == djName) {
+						if(p.equals(djName)) {
 							// Check to see if player has atomicradio.use
 							if(player.hasPermission("atomicradio.use")) {
 								// Get and parse the XML for the radio (returns an array)
@@ -239,8 +253,7 @@ public final class AtomicRadio extends JavaPlugin {
 							if(player.hasPermission("atomicradio.use")) {
 								if(djName == null) {
 									// If there is no current DJ
-									String p = player.getName();
-									djName = p;
+									djName = player.getName();
 									// Get Vault prefix and store it under preDJPrefix
 									//preDJPrefix = chat.getPlayerPrefix(player);
 									// Set Vault prefix to defined DJ prefix (djPrefix)
@@ -287,7 +300,7 @@ public final class AtomicRadio extends JavaPlugin {
 							} else if(player.hasPermission("atomicradio.use")) {
 								//Check to see if there is a current DJ
 								if(djName != null) {
-									if(p == djName) { // Check to see if player is the current DJ
+									if(p.equals(djName)) { // Check to see if player is the current DJ
 										// Broadcast that DJ is going offline
 										Bukkit.broadcastMessage(messagePrefix + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + " has stopped broadcasting! Thanks for listening!");
 										// Get custom prefix from before (if any) and set it back via Vault
@@ -322,21 +335,7 @@ public final class AtomicRadio extends JavaPlugin {
 				} else if(args[0].equalsIgnoreCase("reload")) {
 					// Reload command issued, are they an admin?
 					if (player.hasPermission("atomicradio.admin")) {
-						// set config variables to null
-						listenURL = null;
-						statusURL = null;
-						messagePrefix = null;
-						djPrefix = null;
-						config = null;
-						// read the config values fresh from config.yml
-						reloadConfig();
-						// repopulate config variables
-						config = getConfig();
-						listenURL = config.getString("listenURL");
-						statusURL = config.getString("statusURL");
-						messagePrefix = config.getString("messagePrefix");
-						djPrefix = config.getString("djPrefix");
-						log.info(djPrefix);
+						radioConfigReload();
 						sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Configuration reloaded!");
 						return true;
 					} else {
