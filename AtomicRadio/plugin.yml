@@ -1,24 +1,17 @@
 name: AtomicRadio
 main: id.au.jsaunders.atomicradio.AtomicRadio
-version: 1.0RC2
+version: 1.0RC3
 
 commands:
     radio:
         description: The main command for AtomicRadio.
         usage: /<command> (dj, dj on, dj off, bc, broadcast, reload)
-        permission: atomicradio.status
-        permission-message: plugin.yml You do not have permission to use this command.
 
 permissions:
     atomicradio.admin:
         description: Gives access to all radio commands
         children:
             atomicradio.status: true
-            atomicradio.use: true
+        default: op
     atomicradio.use:
         description: Gives access to DJ commands
-        children:
-            atomicradio.status: true
-    atomicradio.status:
-        description: Gives access to radio/dj status
-        default: true
