@@ -5,7 +5,7 @@ version: 1.0
 commands:
     radio:
         description: The main command for AtomicRadio.
-        usage: /<command> (dj, dj on, dj off, bc, broadcast, reload)
+        usage: /<command> (dj, dj on, dj off, bc, broadcast, reload, request [text], reqlist [num,del[num,all]])
 
 permissions:
     atomicradio.admin:

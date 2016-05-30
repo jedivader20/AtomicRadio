@@ -264,7 +264,7 @@ public final class AtomicRadio extends JavaPlugin {
                         sender.sendMessage(messagePrefix + ChatColor.RED + " " + "NOPE. You do not have permission to use this command. (/radio reload)");
                         return true;
                     }
-                } else if(args[0].equalsIgnoreCase("request")) {
+                } else if(args[0].equalsIgnoreCase("request") || args[0].equalsIgnoreCase("req")) {
                     // first things first, is there a DJ?
                     if(djName == null) {
                         // If there is no current DJ
@@ -296,7 +296,11 @@ public final class AtomicRadio extends JavaPlugin {
                         return true;
                     } else if(args.length == 1) {
                         // No arguments, return the first 5 requests
-                        sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Requests 1-5 of " + requestList.size() + ":");
+                        int reqSize = 5;
+                        if (reqSize > requestList.size()) {
+                            reqSize = requestList.size();
+                        }
+                        sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Requests 1-" + reqSize + " of " + requestList.size() + ":");
                         for(int i = 0; (i < requestList.size() && i < 5); i++) {
                             String value = requestList.get(i);
                             sender.sendMessage((i+1) + ". " + value);
@@ -328,7 +332,7 @@ public final class AtomicRadio extends JavaPlugin {
                                 }
                             } else {
                                 sender.sendMessage(messagePrefix + ChatColor.RED + " " + "Incorrect parameter.");
-                                return true;
+                                return false;
                             }
                         } else {
                             sender.sendMessage(messagePrefix + ChatColor.RED + " " + "NOPE. You do not have permission to use this command. (/radio reqlist del)");
@@ -338,11 +342,16 @@ public final class AtomicRadio extends JavaPlugin {
                         // Is an integer, but is it one of the results?
                         int i = Integer.parseInt(args[1]) * 5;
                         int j = (Integer.parseInt(args[1]) * 5) - 4;
+                        int k = i + 5;
+                        int reqSize = i;
+                        if (reqSize > requestList.size()) {
+                            reqSize = requestList.size();
+                        }
                         if (j > requestList.size()) {
                             sender.sendMessage(messagePrefix + ChatColor.RED + " " + "There is no page" + args[1] + ".");
                         } else {
-                            sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Requests " + j + " to " + i + " of " + requestList.size() + ":");
-                            for (int index = j; (index < requestList.size() && index < (index+5)); index++) {
+                            sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Requests " + j + " to " + reqSize + " of " + requestList.size() + ":");
+                            for (int index = j-1; (index < requestList.size() && index < k); index++) {
                                 String value = requestList.get(index);
                                 sender.sendMessage((index+1) + ". " + value);
                             }
@@ -351,6 +360,7 @@ public final class AtomicRadio extends JavaPlugin {
                     }
                 } else {
                     sender.sendMessage(messagePrefix + ChatColor.RED + " " + "Incorrect parameter.");
+                    return false;
                 }
             }
         } else {
