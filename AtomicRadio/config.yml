@@ -1,12 +1,12 @@
 # Config for AtomicRadio
-            # Edit the following to define the Status URL and Listen URL of your ShoutCast server,
-            # as well as a prefix to precede any messages from AtomicRadio and a prefix for whichever
-            # player that is the current DJ.
+# Edit the following to define the Status URL and Listen URL of your ShoutCast server,
+# as well as a prefix to precede any messages from AtomicRadio and a prefix for whichever
+# player that is the current DJ.
 
-            statusURL: http://127.0.0.1:8000/stats?sid=1
-            listenURL: http://127.0.0.1:8000/listen?sid=1
-            messagePrefix: "&7[&6AtomicRadio&7]"
-            djPrefix: DJ
+statusURL: http://127.0.0.1:8000/stats?sid=1
+listenURL: http://127.0.0.1:8000/listen?sid=1
+messagePrefix: '&6&lAtomicRadio &7&lÂ»'
+djPrefix: DJ
 
-            # Don't touch these, they will be populated by the plugin
-            djName: none
+# Don't touch these, they will be populated by the plugin
+djName: none
