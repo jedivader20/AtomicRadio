@@ -1,6 +1,6 @@
 name: AtomicRadio
 main: id.au.jsaunders.atomicradio.AtomicRadio
-version: 1.0RC3
+version: 1.0
 
 commands:
     radio:

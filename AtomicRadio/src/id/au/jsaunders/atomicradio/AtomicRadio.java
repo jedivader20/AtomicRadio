@@ -224,7 +224,7 @@ public final class AtomicRadio extends JavaPlugin {
                                     djDisplayName = djName;
                                 }
                                 // Broadcast that DJ is going online
-                                TextComponent message = new TextComponent(TextComponent.fromLegacyText(messagePrefix + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djName + " is going online! Click to listen!"));
+                                TextComponent message = new TextComponent(TextComponent.fromLegacyText(messagePrefix + ChatColor.RESET + " " + ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + djPrefix + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + " " + djDisplayName + ChatColor.RESET + " is going online! Click to listen!"));
                                 message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, listenURL));
                                 Bukkit.spigot().broadcast(message);
                                 return true;
@@ -247,6 +247,7 @@ public final class AtomicRadio extends JavaPlugin {
                             Bukkit.broadcastMessage(messagePrefix + ChatColor.RESET + " " + djDisplayName + ChatColor.RESET + " has stopped broadcasting! Thanks for listening!");
                             //Reset DJ status variable
                             djName = null;
+                            requestList.clear();
                             return true;
                         } else {
                             sender.sendMessage(messagePrefix + ChatColor.RED + " " + "NOPE. You do not have permission to use this command. (/radio dj off)");
@@ -276,11 +277,11 @@ public final class AtomicRadio extends JavaPlugin {
                     } else {
                         // oooer, someone is requesting something, better add it to the list and notify the DJ!
                         String request = args[1];
-                        for (int i = 2; i > args.length; i++) {
+                        for (int i = 2; i < args.length; i++) {
                             request = request + " " + args[i];
                         }
                         sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "You requested: " + request);
-                        getServer().getPlayer(djName).sendMessage(messagePrefix + ChatColor.DARK_RED + ChatColor.BOLD + "REQUEST" + ChatColor.RESET + ": " + sender.getName() + " requested: " + request);
+                        getServer().getPlayer(djName).sendMessage(messagePrefix + ChatColor.DARK_RED + ChatColor.BOLD + " REQUEST" + ChatColor.RESET + ": " + sender.getName() + " requested: " + request);
                         request = request + ", requested by: " + sender.getName();
                         requestList.add(request);
                     }
@@ -295,12 +296,11 @@ public final class AtomicRadio extends JavaPlugin {
                         return true;
                     } else if(args.length == 1) {
                         // No arguments, return the first 5 requests
-                        sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Request List: Page 1 of " + (requestList.size()/5) + ":");
-                        for(int i = 0; (i < requestList.size() || i < 5); i++) {
+                        sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Requests 1-5 of " + requestList.size() + ":");
+                        for(int i = 0; (i < requestList.size() && i < 5); i++) {
                             String value = requestList.get(i);
                             sender.sendMessage((i+1) + ". " + value);
                         }
-                        sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Use reqlist del <num> to delete a request, or reqlist clear to remove all requests.");
                         return true;
                     } else if(args[1].equals("del")) {
                         // Delete a request
@@ -317,7 +317,7 @@ public final class AtomicRadio extends JavaPlugin {
                                 return true;
                             } else if (isInteger(args[2])) {
                                 // Number provided, does that request exist?
-                                int i = Integer.parseInt(args[1]);
+                                int i = Integer.parseInt(args[2]);
                                 if (i > requestList.size()) {
                                     sender.sendMessage(messagePrefix + ChatColor.RED + " " + "Incorrect parameter: That request does not exist!");
                                     return true;
@@ -331,21 +331,21 @@ public final class AtomicRadio extends JavaPlugin {
                                 return true;
                             }
                         } else {
-                            sender.sendMessage(messagePrefix + ChatColor.RED + " " + "NOPE. You do not have permission to use this command. (/radio reload)");
+                            sender.sendMessage(messagePrefix + ChatColor.RED + " " + "NOPE. You do not have permission to use this command. (/radio reqlist del)");
                             return true;
                         }
                     } else if (isInteger(args[1])) {
                         // Is an integer, but is it one of the results?
                         int i = Integer.parseInt(args[1]) * 5;
-                        if (i > requestList.size()) {
-                            sender.sendMessage(messagePrefix + ChatColor.RED + " " + "There is no page" + i + ".");
+                        int j = (Integer.parseInt(args[1]) * 5) - 4;
+                        if (j > requestList.size()) {
+                            sender.sendMessage(messagePrefix + ChatColor.RED + " " + "There is no page" + args[1] + ".");
                         } else {
-                            sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Request List: Page " + i + " of " + (requestList.size()/5) + ":");
-                            for (int index = i; (index > requestList.size() || index > (index+5)); i++) {
+                            sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Requests " + j + " to " + i + " of " + requestList.size() + ":");
+                            for (int index = j; (index < requestList.size() && index < (index+5)); index++) {
                                 String value = requestList.get(index);
                                 sender.sendMessage((index+1) + ". " + value);
                             }
-                            sender.sendMessage(messagePrefix + ChatColor.RESET + " " + "Use reqlist del <num> to delete a request, or reqlist clear to remove all requests.");
                             return true;
                         }
                     }
