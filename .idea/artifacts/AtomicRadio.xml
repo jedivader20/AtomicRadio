@@ -2,8 +2,8 @@
   <artifact type="jar" build-on-make="true" name="AtomicRadio">
     <output-path>$PROJECT_DIR$/out/artifacts/AtomicRadio</output-path>
     <root id="archive" name="AtomicRadio.jar">
-      <element id="file-copy" path="$PROJECT_DIR$/AtomicRadio/config.yml" />
-      <element id="file-copy" path="$PROJECT_DIR$/AtomicRadio/plugin.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/AtomicRadio/src/main/resources/config.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/AtomicRadio/src/main/resources/plugin.yml" />
       <element id="module-output" name="AtomicRadio" />
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/AtomicRadio/META-INF/MANIFEST.MF" />

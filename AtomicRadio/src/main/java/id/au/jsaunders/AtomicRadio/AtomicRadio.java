@@ -215,7 +215,7 @@ public final class AtomicRadio extends JavaPlugin {
             messageID = "goingOnlineDubtrack";
             listenURL = config.getString("dubListenURL");
         }
-        TextComponent message = new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RESET + " " + username + ChatColor.RESET + " " + config.getString(messageID)));
+        TextComponent message = new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RESET + " " + username + ChatColor.RESET + "'s " + config.getString(messageID)));
         message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, listenURL));
         return message;
     }
@@ -315,7 +315,7 @@ public final class AtomicRadio extends JavaPlugin {
                         player.spigot().sendMessage(radioError("bc", config.getString("noPermission")));
                         return true;
                     }
-                } else if(args[1].equalsIgnoreCase("off")) { // Player typed /radio off
+                } else if(args[0].equalsIgnoreCase("off")) { // Player typed /radio off
                     if(player.hasPermission("atomicradio.admin") || p.equals(djName)) {
                         if (djName == null) { // Check to see if there is a DJ
                             player.spigot().sendMessage(radioError("off", config.getString("noDJ")));
