@@ -1,7 +1,8 @@
 package id.au.jsaunders.AtomicRadio;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -11,17 +12,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +40,6 @@ public final class AtomicRadio extends JavaPlugin {
     private String streamType;
     private String errorType;
     private String listenURL;
-    private String oldSong;
-    private String newSong;
 
     @Override
     public void onEnable(){
@@ -46,14 +47,12 @@ public final class AtomicRadio extends JavaPlugin {
         // Save a copy of the default config.yml if one is not there
         this.saveDefaultConfig();
         config = getConfig();
-        newSong = null;
         // "AtomicRadio version blah has been enabled!"
         log.info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
     }
 
     @Override
     public void onDisable() {
-        this.saveConfig();
         PluginDescriptionFile pdfFile = this.getDescription();
         // "AtomicRadio version blah has been disabled!"
         log.info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is disabled!" );
@@ -66,11 +65,6 @@ public final class AtomicRadio extends JavaPlugin {
         reloadConfig();
         // repopulate config variables
         config = getConfig();
-    }
-
-    private boolean radioCompareSong(String oldSong, String newSong) {
-        // Compare song title to last-fetched data
-        return !oldSong.equals(newSong);
     }
 
     // XML Parsing
@@ -139,32 +133,41 @@ public final class AtomicRadio extends JavaPlugin {
         result = new String[3];
         try {
             // Parse JSON at checkURL
-            String checkURL = IOUtils.toString(new URL("https://api.dubtrack.fm/room/" + dubURL).openStream());
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(checkURL);
-            JsonNode data = node.get("data");
-            JsonNode currentSong = data.get("currentSong");
+            URL checkURL = new URL("https://api.dubtrack.fm/room/" + dubURL);
+            HttpURLConnection request = (HttpURLConnection) checkURL.openConnection();
+            request.connect();
+            JsonParser jp = new JsonParser();
+            JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
+            JsonObject rootobj = root.getAsJsonObject();
+            JsonObject data = rootobj.getAsJsonObject("data");
+            JsonObject currentSong = data.getAsJsonObject("currentSong");
 
             // Check if currentSong is a null node, means no song playing
-            if (currentSong.isNull()) {
+            if (currentSong.isJsonNull()) {
                 errorType = "streamOffline";
                 return false;
             } else {
                 // There is a song, we can continue
-                result[0] = data.get("activeUsers").asText(); // Current Listeners
-                result[1] = currentSong.get("name").asText(); // Current Song Name
+                result[0] = data.get("activeUsers").getAsString(); // Current Listeners
+                result[1] = currentSong.get("name").getAsString(); // Current Song Name
 
                 // Get DJ Name
-                String playlistURL = IOUtils.toString(new URL("https://api.dubtrack.fm/room/" + data.get("_id").asText() + "/playlist/active").openStream());
-                ObjectMapper mapper2 = new ObjectMapper();
-                JsonNode node2 = mapper2.readTree(playlistURL);
-                JsonNode data2 = node2.get("data");
-                JsonNode song2 = data2.get("song");
-                String userURL = IOUtils.toString(new URL("https://api.dubtrack.fm/user/" + song2.get("userid").asText()).openStream());
-                ObjectMapper mapper3 = new ObjectMapper();
-                JsonNode node3 = mapper3.readTree(userURL);
-                JsonNode data3 = node3.get("data");
-                result[2] = data3.get("username").asText(); // Current DJ Username
+                URL playlistURL = new URL("https://api.dubtrack.fm/room/" + data.get("_id").getAsString() + "/playlist/active");
+                request = (HttpURLConnection) playlistURL.openConnection();
+                request.connect();
+                jp = new JsonParser();
+                root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
+                rootobj = root.getAsJsonObject();
+                data = rootobj.getAsJsonObject("data");
+                JsonObject song = data.getAsJsonObject("song");
+                URL userURL = new URL("https://api.dubtrack.fm/user/" + song.get("userid").getAsString());
+                request = (HttpURLConnection) userURL.openConnection();
+                request.connect();
+                jp = new JsonParser();
+                root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
+                rootobj = root.getAsJsonObject();
+                data = rootobj.getAsJsonObject("data");
+                result[2] = data.get("username").getAsString(); // Current DJ Username
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -198,7 +201,7 @@ public final class AtomicRadio extends JavaPlugin {
     // Compile the broadcast message
     private TextComponent radioBroadcast(int radioListeners, String radioSong, String username, String listenURL) {
         // Build the message to return the broadcast information
-        TextComponent message = new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + " " + ChatColor.DARK_RED + "LIVE"));
+        TextComponent message = new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + " " + ChatColor.DARK_RED + "LIVE" + ChatColor.RESET + " (Click to listen!)"));
         message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, listenURL));
         message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.DARK_RED + "DJ" + ChatColor.GRAY + ": " + ChatColor.RESET + username + "\n" + ChatColor.GRAY + radioListeners + " listeners " + "\n" + ChatColor.DARK_RED + "NP" + ChatColor.GRAY + ": " + radioSong).create()));
         return message;
@@ -211,9 +214,11 @@ public final class AtomicRadio extends JavaPlugin {
         if (type.equals("shoutcast")) {
             messageID = "goingOnlineShoutcast";
             listenURL = config.getString("scListenURL");
+            Log.info(listenURL);
         } else {
             messageID = "goingOnlineDubtrack";
             listenURL = config.getString("dubListenURL");
+            Log.info(listenURL);
         }
         TextComponent message = new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RESET + " " + username + ChatColor.RESET + "'s " + config.getString(messageID)));
         message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, listenURL));
@@ -223,13 +228,13 @@ public final class AtomicRadio extends JavaPlugin {
     // Error Message Generator
     private TextComponent radioError(String command, String errorMessage) {
         // Build the message to return the broadcast information
-        return new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RESET + errorMessage + ChatColor.RESET + " (" + command + ")"));
+        return new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RESET + " " + errorMessage + ChatColor.RESET + " (" + command + ")"));
     }
 
     // Message Generator
     private TextComponent radioMessage(String messageType) {
         // Build the message to return the broadcast information
-        return new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RESET + messageType));
+        return new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RESET + " " + messageType));
     }
 
     // Integer checker
@@ -286,19 +291,8 @@ public final class AtomicRadio extends JavaPlugin {
                                     player.spigot().sendMessage(radioError("streamStatus", config.getString(errorType)));
                                     return true;
                                 } else {
-                                    // Is this the first time that broadcast is being run?
-                                    //noinspection ObjectEqualsNull
-                                    if(newSong.equals(null)) {
-                                        newSong = radioResult[1];
-                                        if(radioCompareSong(oldSong, newSong)) {
-                                            player.spigot().sendMessage(radioError("bc", config.getString("sameSong")));
-                                            return true;
-                                        }
-                                    }
                                     // Broadcast the details of the current stream
                                     Bukkit.spigot().broadcast(radioBroadcast(Integer.parseInt(radioResult[0]), radioResult[1], radioResult[2], listenURL));
-                                    oldSong = radioResult[1];
-                                    newSong = null;
                                     return true;
                                 }
                             } catch (Exception e) {
@@ -334,44 +328,44 @@ public final class AtomicRadio extends JavaPlugin {
                         return true;
                     }
                 } else if(args[0].equalsIgnoreCase("on")) {
-                        // Check to see if player has atomicradio.use permission
-                        if (player.hasPermission("atomicradio.use")) {
-                            if (args.length == 1) { // if no arguments entered
-                                // No arguments entered
-                                player.spigot().sendMessage(radioError("on", config.getString("incorrectParameter") + " " + config.getString("noStreamType")));
-                                return true;
-                            } else {
-                                if (args[1].equalsIgnoreCase("shoutcast") || args[1].equalsIgnoreCase("dubtrack")) {
-                                    if (djName == null) {
-                                        // If there is no current DJ
-                                        // Going online with a Shoutcast stream
-                                        streamType = args[1].toLowerCase();
-                                        djName = p;
-                                        // Does the player have a nickname? If so, use that shit.
-                                        if (!(player.getDisplayName().equals(djName))) {
-                                            djDisplayName = player.getDisplayName();
-                                        } else {
-                                            djDisplayName = djName;
-                                        }
-                                        // Broadcast that DJ is going online
-                                        Bukkit.spigot().broadcast(radioOnline(djDisplayName, streamType));
-                                        return true;
+                    // Check to see if player has atomicradio.use permission
+                    if (player.hasPermission("atomicradio.use")) {
+                        if (args.length == 1) { // if no arguments entered
+                            // No arguments entered
+                            player.spigot().sendMessage(radioError("on", config.getString("incorrectParameter") + " " + config.getString("noStreamType")));
+                            return true;
+                        } else {
+                            if (args[1].equalsIgnoreCase("shoutcast") || args[1].equalsIgnoreCase("dubtrack")) {
+                                if (djName == null) {
+                                    // If there is no current DJ
+                                    // Going online with a Shoutcast stream
+                                    streamType = args[1].toLowerCase();
+                                    djName = p;
+                                    // Does the player have a nickname? If so, use that shit.
+                                    if (!(player.getDisplayName().equals(djName))) {
+                                        djDisplayName = player.getDisplayName();
                                     } else {
-                                        // If there is a current DJ
-                                        player.spigot().sendMessage(radioError("on", config.getString("notDJ")));
-                                        return true;
+                                        djDisplayName = djName;
                                     }
+                                    // Broadcast that DJ is going online
+                                    Bukkit.spigot().broadcast(radioOnline(djDisplayName, streamType));
+                                    return true;
                                 } else {
-                                    // Incorrect arguments entered
-                                    player.spigot().sendMessage(radioError("on", config.getString("incorrectParameter") + " " + config.getString("noStreamType")));
+                                    // If there is a current DJ
+                                    player.spigot().sendMessage(radioError("on", config.getString("notDJ")));
                                     return true;
                                 }
+                            } else {
+                                // Incorrect arguments entered
+                                player.spigot().sendMessage(radioError("on", config.getString("incorrectParameter") + " " + config.getString("noStreamType")));
+                                return true;
                             }
-                        } else {
-                            player.spigot().sendMessage(radioError("on", config.getString("noPermission")));
-                            return true;
                         }
-                    } else if(args[0].equalsIgnoreCase("reload")) {
+                    } else {
+                        player.spigot().sendMessage(radioError("on", config.getString("noPermission")));
+                        return true;
+                    }
+                } else if(args[0].equalsIgnoreCase("reload")) {
                     // Reload command issued, are they an admin?
                     if (player.hasPermission("atomicradio.admin")) {
                         radioConfigReload();
@@ -397,7 +391,7 @@ public final class AtomicRadio extends JavaPlugin {
                         for (int i = 2; i < args.length; i++) {
                             request = request + " " + args[i];
                         }
-                        player.spigot().sendMessage(radioMessage(config.getString("requested")));
+                        player.spigot().sendMessage(radioMessage(config.getString("youRequested") + ChatColor.RESET + ": " + request));
                         getServer().getPlayer(djName).sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.DARK_RED + ChatColor.BOLD + " REQUEST" + ChatColor.RESET + ": " + sender.getName() + " requested: " + request);
                         requestList.add(request);
                         requesterList.add(player.getDisplayName());
@@ -419,7 +413,7 @@ public final class AtomicRadio extends JavaPlugin {
                         }
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.GOLD + " " + "Requests " + ChatColor.DARK_GREEN + "1-" + reqSize + ChatColor.GOLD + " of " + ChatColor.DARK_GREEN + requestList.size() + ChatColor.GOLD + ":");
                         for(int i = 0; (i < requestList.size() && i < 5); i++) {
-                            sender.sendMessage(ChatColor.GOLD + String.valueOf(i+1) + ". " + ChatColor.RESET + requestList.get(i) + " " + config.getString("requestedBy") + " " + ChatColor.RESET + requesterList.get(i));
+                            sender.sendMessage(ChatColor.GOLD + String.valueOf(i+1) + ". " + ChatColor.RESET + requestList.get(i) + " " + config.getString("requestedBy") + ": " + ChatColor.RESET + requesterList.get(i));
                         }
                         return true;
                     } else if(args[1].equalsIgnoreCase("del")) {
@@ -468,7 +462,7 @@ public final class AtomicRadio extends JavaPlugin {
                         } else {
                             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.GOLD + " " + "Requests " + ChatColor.DARK_GREEN + j + ChatColor.GOLD + " to " + ChatColor.DARK_GREEN + reqSize + ChatColor.GOLD + " of " + ChatColor.DARK_GREEN + requestList.size() + ":");
                             for (int index = j-1; (index < requestList.size() && index < k); index++) {
-                                sender.sendMessage(ChatColor.GOLD + String.valueOf(i+1) + ". " + ChatColor.RESET + requestList.get(i) + " " + config.getString("requestedBy") + " " + ChatColor.RESET + requesterList.get(i));
+                                sender.sendMessage(ChatColor.GOLD + String.valueOf(i+1) + ". " + ChatColor.RESET + requestList.get(i) + " " + config.getString("requestedBy") + ": " + ChatColor.RESET + requesterList.get(i));
                             }
                             return true;
                         }

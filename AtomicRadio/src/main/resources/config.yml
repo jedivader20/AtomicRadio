@@ -3,40 +3,39 @@
 # Shoutcast server details
 # Populate these fields if you have a Shoutcast server.
 # This contains the URL for the Shoutcast Status XML, ie http://radio.auscraft.net:8000/stats?sid=1
-scStatusURL:
+scStatusURL: http://radio.auscraft.net:8000/stats?sid=1
 # This contains the URL for the Shoutcast Listen playlist, ie http://radio.auscraft.net:8000/listen.pls?sid=1
-scListenURL:
+scListenURL: http://bit.ly/RadioAusCraft
 
 # Dubtrack server details
 # Populate these fields if you have a Dubtrack.fm room.
 # The short URL of your room (ie http://dubtrack.fm/join/myroomname is "myroomname")
-dubRoomName:
+dubRoomName: auscraftnet
 # The short URL of your room (ie http://dubtrack.fm/join/myroomname)
-dubListenURL:
+dubListenURL: https://www.dubtrack.fm/join/auscraftnet
 
 # This is what is displayed before every message. Change to your liking.
-messagePrefix: '&6&lAtomicRadio &7&lÂ»'
+messagePrefix: "&6&lAtomicRadio &2&lÂ»"
 
 # Message Definitions
 # These are the default messages the plugin gives. Change to your liking. Colour codes optional, defaults to white if none given.
-noPermission: "You do not have permission to use this command."
-noDJ: "There is no DJ online, please try again later."
-notDJ: "There is already a DJ online, Please try again later."
-streamOffline: "Stream is currently offline! Please try again later."
-noRequest: "No request given."
-noRequests: "No requests currently. Request something!"
-youRequested: "You requested:"
-delRequest: "You need to specify a number, or ''all'' to clear all requests."
-incorrectParameter: "Incorrect Parameter."
-sameSong: "You can only broadcast once per song. Please wait until the song changes to try again."
-internalError: "An Internal Error has occurred. Please note the error code."
-goingOnlineShoutcast: "Shoutcast stream is coming online! Click to listen!"
-goingOnlineDubtrack: "Dubtrack stream is coming online! Click to listen!"
-goingOffline: "We''re going offline! Thanks for listening!"
-noStreamType: "You need to specify either Shoutcast or Dubtrack."
-configReloaded: "Configuration reloaded."
-requested: "You requested:"
-requestedBy: "Requested By:"
-noRequestSpecified: "You need to specify a number, or ''all'' to clear all requests."
-allRequestsDeleted: "All requests deleted."
-requestNotExist: "That request does not exist."
+noPermission: You do not have permission to use this command.
+noDJ: There is no DJ online, please try again later.
+notDJ: There is already a DJ online, Please try again later.
+streamOffline: Stream is currently offline! Please try again later.
+noRequest: No request given.
+noRequests: No requests currently. Request something!
+youRequested: You requested
+delRequest: You need to specify a number, or 'all' to clear all requests.
+incorrectParameter: Incorrect Parameter.
+sameSong: You can only broadcast once per song. Please wait until the song changes to try again.
+internalError: An Internal Error has occurred. Please note the error code.
+goingOnlineShoutcast: Shoutcast stream is coming online! Click to listen!
+goingOnlineDubtrack: Dubtrack stream is coming online! Click to listen!
+goingOffline: We're going offline! Thanks for listening!
+noStreamType: You need to specify either Shoutcast or Dubtrack.
+configReloaded: Configuration reloaded.
+requestedBy: Requested By
+noRequestSpecified: You need to specify a number, or 'all' to clear all requests.
+allRequestsDeleted: All requests deleted.
+requestNotExist: That request does not exist.
