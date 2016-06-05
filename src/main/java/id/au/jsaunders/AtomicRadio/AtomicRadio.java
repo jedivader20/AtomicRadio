@@ -12,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,14 +26,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 public final class AtomicRadio extends JavaPlugin {
     private static final Logger log = Logger.getLogger("Minecraft");
     private static String djName;
-    private static final List<String> requestList = new ArrayList<>();
-    private static final List<String> requesterList = new ArrayList<>();
+    private static ArrayList<String> requestList;
+    private static ArrayList<String> requesterList;
     private FileConfiguration config;
     private String[] radioResult;
     private String streamType;
@@ -47,6 +45,8 @@ public final class AtomicRadio extends JavaPlugin {
         // Save a copy of the default config.yml if one is not there
         this.saveDefaultConfig();
         config = getConfig();
+        requesterList = new ArrayList<String>();
+        requestList = new ArrayList<String>();
         // "AtomicRadio version blah has been enabled!"
         log.info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
     }
@@ -214,11 +214,9 @@ public final class AtomicRadio extends JavaPlugin {
         if (type.equals("shoutcast")) {
             messageID = "goingOnlineShoutcast";
             listenURL = config.getString("scListenURL");
-            Log.info(listenURL);
         } else {
             messageID = "goingOnlineDubtrack";
             listenURL = config.getString("dubListenURL");
-            Log.info(listenURL);
         }
         TextComponent message = new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RESET + " " + username + ChatColor.RESET + "'s " + config.getString(messageID)));
         message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, listenURL));
@@ -369,7 +367,7 @@ public final class AtomicRadio extends JavaPlugin {
                     // Reload command issued, are they an admin?
                     if (player.hasPermission("atomicradio.admin")) {
                         radioConfigReload();
-                        Bukkit.spigot().broadcast(radioMessage(config.getString("configReloaded")));
+                        player.spigot().sendMessage(radioMessage(config.getString("configReloaded")));
                         return true;
                     } else {
                         player.spigot().sendMessage(radioError("reload", config.getString("noPermission")));
@@ -411,9 +409,9 @@ public final class AtomicRadio extends JavaPlugin {
                         if (reqSize > requestList.size()) {
                             reqSize = requestList.size();
                         }
-                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.GOLD + " " + "Requests " + ChatColor.DARK_GREEN + "1-" + reqSize + ChatColor.GOLD + " of " + ChatColor.DARK_GREEN + requestList.size() + ChatColor.GOLD + ":");
+                        player.spigot().sendMessage(radioMessage(ChatColor.GOLD + " " + "Requests " + ChatColor.DARK_GREEN + "1-" + reqSize + ChatColor.GOLD + " of " + ChatColor.DARK_GREEN + requestList.size() + ChatColor.GOLD + ":"));
                         for(int i = 0; (i < requestList.size() && i < 5); i++) {
-                            sender.sendMessage(ChatColor.GOLD + String.valueOf(i+1) + ". " + ChatColor.RESET + requestList.get(i) + " " + config.getString("requestedBy") + ": " + ChatColor.RESET + requesterList.get(i));
+                            player.spigot().sendMessage(radioMessage(ChatColor.GOLD + String.valueOf(i+1) + ". " + ChatColor.RESET + requestList.get(i) + " " + config.getString("requestedBy") + ": " + ChatColor.RESET + requesterList.get(i)));
                         }
                         return true;
                     } else if(args[1].equalsIgnoreCase("del")) {
@@ -437,7 +435,7 @@ public final class AtomicRadio extends JavaPlugin {
                                     return true;
                                 } else {
                                     requestList.remove((i - 1));
-                                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RED + " " + "Request " + i + " deleted!");
+                                    player.spigot().sendMessage(radioMessage(ChatColor.RED + " " + "Request " + i + " deleted!"));
                                     return true;
                                 }
                             } else {
@@ -458,11 +456,11 @@ public final class AtomicRadio extends JavaPlugin {
                             reqSize = requestList.size();
                         }
                         if (j > requestList.size()) {
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RED + " " + "There is no page" + args[1] + ".");
+                            player.spigot().sendMessage(radioError("reqlist", ChatColor.RED + " " + "There is no page" + args[1] + "."));
                         } else {
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.GOLD + " " + "Requests " + ChatColor.DARK_GREEN + j + ChatColor.GOLD + " to " + ChatColor.DARK_GREEN + reqSize + ChatColor.GOLD + " of " + ChatColor.DARK_GREEN + requestList.size() + ":");
+                            player.spigot().sendMessage(radioMessage(ChatColor.GOLD + " " + "Requests " + ChatColor.DARK_GREEN + j + ChatColor.GOLD + " to " + ChatColor.DARK_GREEN + reqSize + ChatColor.GOLD + " of " + ChatColor.DARK_GREEN + requestList.size() + ":"));
                             for (int index = j-1; (index < requestList.size() && index < k); index++) {
-                                sender.sendMessage(ChatColor.GOLD + String.valueOf(i+1) + ". " + ChatColor.RESET + requestList.get(i) + " " + config.getString("requestedBy") + ": " + ChatColor.RESET + requesterList.get(i));
+                                player.spigot().sendMessage(radioMessage(ChatColor.GOLD + String.valueOf(i+1) + ". " + ChatColor.RESET + requestList.get(i) + " " + config.getString("requestedBy") + ": " + ChatColor.RESET + requesterList.get(i)));
                             }
                             return true;
                         }
