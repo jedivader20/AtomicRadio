@@ -460,6 +460,6 @@ public final class AtomicRadio extends JavaPlugin {
 	            return true;
             }
         }
-        return true;
+        return false;
     }
 }
