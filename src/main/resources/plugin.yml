@@ -1,6 +1,6 @@
-name: AtomicRadio
-main: id.au.jsaunders.AtomicRadio.AtomicRadio
-version: 2.0
+name: ${project.artifactId}
+main: id.au.jsaunders.${project.artifactId}.${project.artifactId}
+version: ${project.version}
 
 commands:
     radio:
