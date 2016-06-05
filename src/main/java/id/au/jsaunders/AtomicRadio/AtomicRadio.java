@@ -205,10 +205,10 @@ public final class AtomicRadio extends JavaPlugin {
 	                                                                               " " + ChatColor.DARK_RED + "LIVE" + ChatColor.RESET + " (Click to listen!)"));
         message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, listenURL));
         message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                             new ComponentBuilder(ChatColor.DARK_RED + "DJ" + ChatColor.GRAY + ": " + ChatColor.RESET +
-	                                                                  username + "\n" +
-	                                                                  ChatColor.GRAY + radioListeners + " listeners " + "\n" +
-	                                                                  ChatColor.DARK_RED + "NP" + ChatColor.GRAY + ": " + radioSong).create()));
+                                             new ComponentBuilder(ChatColor.GREEN + "DJ " + ChatColor.RESET + username + "\n" +
+												 ChatColor.GREEN + ChatColor.BOLD + "♬" + "\n" +
+												 ChatColor.RESET + radioSong + "\n" +
+												 ChatColor.AQUA + radioListeners + " listeners").create()));
         return message;
     }
 
