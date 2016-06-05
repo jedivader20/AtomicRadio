@@ -201,9 +201,14 @@ public final class AtomicRadio extends JavaPlugin {
     // Compile the broadcast message
     private TextComponent radioBroadcast(int radioListeners, String radioSong, String username, String listenURL) {
         // Build the message to return the broadcast information
-        TextComponent message = new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + " " + ChatColor.DARK_RED + "LIVE" + ChatColor.RESET + " (Click to listen!)"));
+        TextComponent message = new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) +
+	                                                                               " " + ChatColor.DARK_RED + "LIVE" + ChatColor.RESET + " (Click to listen!)"));
         message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, listenURL));
-        message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.DARK_RED + "DJ" + ChatColor.GRAY + ": " + ChatColor.RESET + username + "\n" + ChatColor.GRAY + radioListeners + " listeners " + "\n" + ChatColor.DARK_RED + "NP" + ChatColor.GRAY + ": " + radioSong).create()));
+        message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                             new ComponentBuilder(ChatColor.DARK_RED + "DJ" + ChatColor.GRAY + ": " + ChatColor.RESET +
+	                                                                  username + "\n" +
+	                                                                  ChatColor.GRAY + radioListeners + " listeners " + "\n" +
+	                                                                  ChatColor.DARK_RED + "NP" + ChatColor.GRAY + ": " + radioSong).create()));
         return message;
     }
 
@@ -218,7 +223,10 @@ public final class AtomicRadio extends JavaPlugin {
             messageID = "goingOnlineDubtrack";
             listenURL = config.getString("dubListenURL");
         }
-        TextComponent message = new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RESET + " " + username + ChatColor.RESET + "'s " + config.getString(messageID)));
+        TextComponent message = new TextComponent(TextComponent.fromLegacyText(
+	                                                ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) +
+	                                                ChatColor.RESET + " " + username + ChatColor.RESET + "'s " +
+		                                            ChatColor.translateAlternateColorCodes('&', config.getString(messageID))));
         message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, listenURL));
         return message;
     }
@@ -226,13 +234,18 @@ public final class AtomicRadio extends JavaPlugin {
     // Error Message Generator
     private TextComponent radioError(String command, String errorMessage) {
         // Build the message to return the broadcast information
-        return new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RESET + " " + errorMessage + ChatColor.RESET + " (" + command + ")"));
+        return new TextComponent(TextComponent.fromLegacyText(
+	                                ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) +
+	                                ChatColor.RESET + " " + ChatColor.translateAlternateColorCodes('&', errorMessage) +
+	                                ChatColor.RESET + " (" + command + ")"));
     }
 
     // Message Generator
     private TextComponent radioMessage(String messageType) {
         // Build the message to return the broadcast information
-        return new TextComponent(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RESET + " " + messageType));
+        return new TextComponent(TextComponent.fromLegacyText(
+	        ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RESET + " " +
+		    ChatColor.translateAlternateColorCodes('&', messageType)));
     }
 
     // Integer checker
@@ -440,6 +453,7 @@ public final class AtomicRadio extends JavaPlugin {
 			            player.spigot().sendMessage(radioError("reqlist", config.getString("incorrectParameter")));
 		            }
 	            });
+	            return true;
             }
             else {
 	            log.warning(ChatColor.translateAlternateColorCodes('&', config.getString("messagePrefix")) + ChatColor.RED + " " + "This command may only be issued by a player!");
