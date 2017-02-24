@@ -19,11 +19,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -134,7 +135,7 @@ public final class AtomicRadio extends JavaPlugin {
         try {
             // Parse JSON at checkURL
             URL checkURL = new URL("https://api.dubtrack.fm/room/" + dubURL);
-            HttpURLConnection request = (HttpURLConnection) checkURL.openConnection();
+            HttpsURLConnection request = (HttpsURLConnection) checkURL.openConnection();
             request.connect();
             JsonParser jp = new JsonParser();
             JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
@@ -153,7 +154,7 @@ public final class AtomicRadio extends JavaPlugin {
 
                 // Get DJ Name
                 URL playlistURL = new URL("https://api.dubtrack.fm/room/" + data.get("_id").getAsString() + "/playlist/active");
-                request = (HttpURLConnection) playlistURL.openConnection();
+                request = (HttpsURLConnection) playlistURL.openConnection();
                 request.connect();
                 jp = new JsonParser();
                 root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
@@ -161,7 +162,7 @@ public final class AtomicRadio extends JavaPlugin {
                 data = rootobj.getAsJsonObject("data");
                 JsonObject song = data.getAsJsonObject("song");
                 URL userURL = new URL("https://api.dubtrack.fm/user/" + song.get("userid").getAsString());
-                request = (HttpURLConnection) userURL.openConnection();
+                request = (HttpsURLConnection) userURL.openConnection();
                 request.connect();
                 jp = new JsonParser();
                 root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
