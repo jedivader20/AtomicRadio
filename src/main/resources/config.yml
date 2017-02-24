@@ -13,9 +13,15 @@ scListenURL: http://bit.ly/RadioAusCraft
 dubRoomName: auscraftnet
 # The short URL of your room (ie http://dubtrack.fm/join/myroomname)
 dubListenURL: https://www.dubtrack.fm/join/auscraftnet
+
+# Recently, the Dubtrack API hasn't worked from in-game due to SSL errors. If you're experiencing this, change the
+# following to true
+altDubStatusURL: true
+
+# The following is ONLY if you've changed the above to true!
 # The location of the stream status PHP (don't change this unless you're planning on hosting this yourself!)
 # PHP script available from https://github.com/jedivader20/AtomicRadio/blob/master/atomicradio-streamstatus.php
-streamStatusURL: http://jsaunders.id.au/atomicradio-streamstatus.php
+dubStatusURL: http://jsaunders.id.au/atomicradio-streamstatus.php
 
 # This is what is displayed before every message. Change to your liking.
 messagePrefix: "&6&lAtomicRadio &2&lÂ»"

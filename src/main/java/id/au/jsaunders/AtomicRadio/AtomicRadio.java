@@ -24,7 +24,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -130,11 +129,22 @@ public final class AtomicRadio extends JavaPlugin {
 
     // JSON Parsing
     private boolean getDubStatus(String dubURL) {
-        String[] result;
+        String statusURL;
+		if (config.getBoolean("altDubStatusURL")) {
+			statusURL = config.getString("dubStatusURL");
+		} else {
+			statusURL = "";
+		}
+		String[] result;
         result = new String[3];
         try {
             // Parse JSON at checkURL
-            URL checkURL = new URL("https://api.dubtrack.fm/room/" + dubURL);
+			URL checkURL;
+            if (statusURL.isEmpty()) {
+				checkURL = new URL("https://api.dubtrack.fm/room/" + dubURL);
+			} else {
+				checkURL = new URL(statusURL + "?check=getStatus&roomName=" + dubURL);
+			}
             HttpsURLConnection request = (HttpsURLConnection) checkURL.openConnection();
             request.connect();
             JsonParser jp = new JsonParser();
@@ -153,7 +163,12 @@ public final class AtomicRadio extends JavaPlugin {
                 result[1] = currentSong.get("name").getAsString(); // Current Song Name
 
                 // Get DJ Name
-                URL playlistURL = new URL("https://api.dubtrack.fm/room/" + data.get("_id").getAsString() + "/playlist/active");
+                URL playlistURL;
+				if (statusURL.isEmpty()) {
+					playlistURL = new URL("https://api.dubtrack.fm/room/" + data.get("_id").getAsString() + "/playlist/active");
+				} else {
+					playlistURL = new URL(statusURL + "?check=getUserID&roomID=" + data.get("_id").getAsString());
+				}
                 request = (HttpsURLConnection) playlistURL.openConnection();
                 request.connect();
                 jp = new JsonParser();
@@ -161,7 +176,12 @@ public final class AtomicRadio extends JavaPlugin {
                 rootobj = root.getAsJsonObject();
                 data = rootobj.getAsJsonObject("data");
                 JsonObject song = data.getAsJsonObject("song");
-                URL userURL = new URL("https://api.dubtrack.fm/user/" + song.get("userid").getAsString());
+				URL userURL;
+				if (statusURL.isEmpty()) {
+					userURL = new URL("https://api.dubtrack.fm/user/" + song.get("userid").getAsString());
+				}else {
+					userURL = new URL(statusURL + "?check=getUserName&userID=" + song.get("userid").getAsString());
+				}
                 request = (HttpsURLConnection) userURL.openConnection();
                 request.connect();
                 jp = new JsonParser();
