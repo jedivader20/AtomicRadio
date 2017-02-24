@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import javax.net.ssl.HttpsURLConnection;
+import java.net.HttpURLConnection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
@@ -145,7 +145,7 @@ public final class AtomicRadio extends JavaPlugin {
 			} else {
 				checkURL = new URL(statusURL + "?check=getStatus&roomName=" + dubURL);
 			}
-            HttpsURLConnection request = (HttpsURLConnection) checkURL.openConnection();
+            HttpURLConnection request = (HttpURLConnection) checkURL.openConnection();
             request.connect();
             JsonParser jp = new JsonParser();
             JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
@@ -169,7 +169,7 @@ public final class AtomicRadio extends JavaPlugin {
 				} else {
 					playlistURL = new URL(statusURL + "?check=getUserID&roomID=" + data.get("_id").getAsString());
 				}
-                request = (HttpsURLConnection) playlistURL.openConnection();
+                request = (HttpURLConnection) playlistURL.openConnection();
                 request.connect();
                 jp = new JsonParser();
                 root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
@@ -182,7 +182,7 @@ public final class AtomicRadio extends JavaPlugin {
 				}else {
 					userURL = new URL(statusURL + "?check=getUserName&userID=" + song.get("userid").getAsString());
 				}
-                request = (HttpsURLConnection) userURL.openConnection();
+                request = (HttpURLConnection) userURL.openConnection();
                 request.connect();
                 jp = new JsonParser();
                 root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
