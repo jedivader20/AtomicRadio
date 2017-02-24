@@ -13,6 +13,9 @@ scListenURL: http://bit.ly/RadioAusCraft
 dubRoomName: auscraftnet
 # The short URL of your room (ie http://dubtrack.fm/join/myroomname)
 dubListenURL: https://www.dubtrack.fm/join/auscraftnet
+# The location of the stream status PHP (don't change this unless you're planning on hosting this yourself!)
+# PHP script available from https://github.com/jedivader20/AtomicRadio/blob/master/atomicradio-streamstatus.php
+streamStatusURL: http://jsaunders.id.au/atomicradio-streamstatus.php
 
 # This is what is displayed before every message. Change to your liking.
 messagePrefix: "&6&lAtomicRadio &2&lÂ»"
