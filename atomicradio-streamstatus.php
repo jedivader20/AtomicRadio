@@ -1,6 +1,6 @@
 <?php
 // Seeing as Java lately has been throwing SSL errors for the Dubtrack API, this is a PHP script to pull the SSL API
-// pages and spit out friendly XML. This file is hosted on my web hosting (jsaunders.id.au/atomicradio-streamstatus.php)
+// pages and spit out JSON. This file is hosted on my web hosting (jsaunders.id.au/atomicradio-streamstatus.php)
 // but this code is provided to show that I'm not stealing anything from you. You are more than welcome to host this
 // file yourself on your webserver (requires php_curl) and change the config to reflect the new address.
 
